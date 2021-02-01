@@ -25,4 +25,12 @@ class TestVendingMachine < Minitest::Test
   def test_insert_1000_yen_coin
     assert_equal 0, @vending_machine.insert(1000)
   end
+
+  def test_insert_uninsertable_money
+    assert_equal 5000, @vending_machine.insert(5000)
+  end
+
+  def test_insert_unknown_object
+    assert_equal '葉っぱのおかね', @vending_machine.insert('葉っぱのおかね')
+  end
 end
