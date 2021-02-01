@@ -51,4 +51,13 @@ class TestVendingMachine < Minitest::Test
     assert_equal 1100, @vending_machine.refund
     assert_equal 0, @vending_machine.input_amount
   end
+
+  def test_stock_tally
+    assert_equal({ 'コーラ' => { price: 120, count: 5 } }, @vending_machine.stock_tally)
+  end
+
+  def test_store
+    @vending_machine.store(Cola.new)
+    assert_equal({ 'コーラ' => { price: 120, count: 6 } }, @vending_machine.stock_tally)
+  end
 end
