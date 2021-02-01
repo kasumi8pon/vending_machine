@@ -44,4 +44,11 @@ class TestVendingMachine < Minitest::Test
     @vending_machine.insert(1000)
     assert_equal 1100, @vending_machine.input_amount
   end
+
+  def test_refund
+    @vending_machine.insert(100)
+    @vending_machine.insert(1000)
+    assert_equal 1100, @vending_machine.refund
+    assert_equal 0, @vending_machine.input_amount
+  end
 end

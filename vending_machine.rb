@@ -13,4 +13,10 @@ class VendingMachine
     @input_amount += money
     0
   end
+
+  def refund
+    refund_money = @input_amount
+    @input_amount = 0
+    refund_money
+  end
 end
