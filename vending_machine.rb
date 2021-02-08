@@ -45,7 +45,8 @@ class VendingMachine
     drink_klass = Object.const_get(drink.to_s.capitalize)
     @sales_amount += drink_klass.price
     @input_amount -= drink_klass.price
-    [@stock[drink_klass].shift, @input_amount]
+    change = refund
+    [@stock[drink_klass].shift, change]
   end
 end
 
