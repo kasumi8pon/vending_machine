@@ -103,5 +103,31 @@ describe VendingMachine do
       @vending_machine.insert(100)
       _(@vending_machine.buy(:cola)).must_be_nil
     end
+
+    it 'ドリンクを購入した場合、その price と同じ値の分 sales_amount が増えること' do
+      @vending_machine.insert(500)
+      @vending_machine.buy(:cola)
+      _(@vending_machine.sales_amount).must_equal(120)
+    end
+
+    it 'ドリンクを購入した場合、在庫の量が減ること' do
+      @vending_machine.insert(500)
+      @vending_machine.buy(:cola)
+      _(@vending_machine.stock_tally['コーラ'][:count]).must_equal(4)
+    end
+  end
+
+  describe '#sales_amount' do
+    it '初期状態では 0 が返ること' do
+      _(@vending_machine.sales_amount).must_equal(0)
+    end
+
+    it 'ドリンクを購入すると、購入された金額の合計額が返ること' do
+      @vending_machine.insert(500)
+      @vending_machine.buy(:cola)
+      _(@vending_machine.sales_amount).must_equal(120)
+      @vending_machine.buy(:cola)
+      _(@vending_machine.sales_amount).must_equal(240)
+    end
   end
 end

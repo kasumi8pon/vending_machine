@@ -1,10 +1,11 @@
 class VendingMachine
   INSERTABLE_MONEY = [10, 50, 100, 500, 1000]
 
-  attr_reader :input_amount
+  attr_reader :input_amount, :sales_amount
 
   def initialize
     @input_amount = 0
+    @sales_amount = 0
     @stock = Hash.new { |hash, key| hash[key] = [] }
     5.times { self.store(Cola.new) }
   end
@@ -41,6 +42,7 @@ class VendingMachine
     return unless buy?(drink)
 
     drink_klass = Object.const_get(drink.to_s.capitalize)
+    @sales_amount += drink_klass.price
     @stock[drink_klass].shift
   end
 end
