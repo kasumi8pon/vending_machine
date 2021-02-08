@@ -168,4 +168,14 @@ describe VendingMachine do
       _(@vending_machine.sales_amount).must_equal(240)
     end
   end
+
+  describe '#change' do
+    it '初期状態で、1000円札が 5枚、10円玉、50円玉、100円玉、500円玉 が 10 枚ずつ用意してあること' do
+      _(@vending_machine.change[1000]).must_equal(5)
+      _(@vending_machine.change[10]).must_equal(10)
+      _(@vending_machine.change[50]).must_equal(10)
+      _(@vending_machine.change[100]).must_equal(10)
+      _(@vending_machine.change[500]).must_equal(10)
+    end
+  end
 end
