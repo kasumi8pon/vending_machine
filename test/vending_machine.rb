@@ -60,4 +60,13 @@ class TestVendingMachine < Minitest::Test
     @vending_machine.store(Cola.new)
     assert_equal({ 'コーラ' => { price: 120, count: 6 } }, @vending_machine.stock_tally)
   end
+
+  def test_buy_if_enough_input_amount
+    @vending_machine.insert(500)
+    assert_equal(true, @vending_machine.buy?(:cola))
+  end
+
+  def test_buy_if_not_enough_input_amount
+    assert_equal(false, @vending_machine.buy?(:cola))
+  end
 end

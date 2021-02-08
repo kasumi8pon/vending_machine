@@ -31,6 +31,11 @@ class VendingMachine
       result[drink.name] = { price: drink.price, count: drinks.size }
     end
   end
+
+  def buy?(drink)
+    drink_klass = Object.const_get(drink.to_s.capitalize)
+    drink_klass.price <= @input_amount
+  end
 end
 
 class Cola
