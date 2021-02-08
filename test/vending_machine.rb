@@ -124,6 +124,12 @@ describe VendingMachine do
       _(@vending_machine.sales_amount).must_equal(120)
     end
 
+    it 'ドリンクを購入した場合、その price と同じ値の分 input_amount が減ること' do
+      @vending_machine.insert(500)
+      @vending_machine.buy(:cola)
+      _(@vending_machine.input_amount).must_equal(380)
+    end
+
     it 'ドリンクを購入した場合、在庫の量が減ること' do
       @vending_machine.insert(500)
       @vending_machine.buy(:cola)
@@ -134,6 +140,12 @@ describe VendingMachine do
       @vending_machine.insert(100)
       @vending_machine.buy(:cola)
       _(@vending_machine.sales_amount).must_equal(0)
+    end
+
+    it 'ドリンクを購入できなかった場合、input_amount が減らないこと' do
+      @vending_machine.insert(100)
+      @vending_machine.buy(:cola)
+      _(@vending_machine.input_amount).must_equal(100)
     end
 
     it 'ドリンクを購入できなかった場合、在庫が減らないこと' do
@@ -155,9 +167,5 @@ describe VendingMachine do
       @vending_machine.buy(:cola)
       _(@vending_machine.sales_amount).must_equal(240)
     end
-  end
-
-  describe '#change' do
-
   end
 end
