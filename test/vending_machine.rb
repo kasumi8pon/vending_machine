@@ -100,9 +100,11 @@ describe VendingMachine do
   end
 
   describe '#buy' do
-    it '投入金額が足りている場合、 購入したドリンクが返ること' do
+    it '投入金額が足りている場合、 購入したドリンクと釣り銭が返ること' do
       @vending_machine.insert(500)
-      _(@vending_machine.buy(:cola)).must_be_instance_of(Cola)
+      bought_drink, change = @vending_machine.buy(:cola)
+      _(bought_drink).must_be_instance_of(Cola)
+      _(change).must_equal(380)
     end
 
     it '投入金額が足りていない場合、 nil が返ること' do
@@ -153,5 +155,9 @@ describe VendingMachine do
       @vending_machine.buy(:cola)
       _(@vending_machine.sales_amount).must_equal(240)
     end
+  end
+
+  describe '#change' do
+
   end
 end
