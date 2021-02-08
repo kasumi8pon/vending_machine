@@ -36,6 +36,13 @@ class VendingMachine
     drink_klass = Object.const_get(drink.to_s.capitalize)
     drink_klass.price <= @input_amount
   end
+
+  def buy(drink)
+    return unless buy?(drink)
+
+    drink_klass = Object.const_get(drink.to_s.capitalize)
+    @stock[drink_klass].shift
+  end
 end
 
 class Cola

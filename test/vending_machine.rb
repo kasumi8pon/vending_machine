@@ -69,4 +69,14 @@ class TestVendingMachine < Minitest::Test
   def test_buy_if_not_enough_input_amount
     assert_equal(false, @vending_machine.buy?(:cola))
   end
+
+  def test_buy_drink_if_can_buy
+    @vending_machine.insert(500)
+    assert_equal(Cola, @vending_machine.buy(:cola).class)
+  end
+
+  def test_buy_drink_if_cannot_buy
+    @vending_machine.insert(100)
+    assert_nil(@vending_machine.buy(:cola))
+  end
 end
