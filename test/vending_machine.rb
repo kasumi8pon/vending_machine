@@ -82,13 +82,19 @@ describe VendingMachine do
   end
 
   describe '#buy?' do
-    it '投入金額が足りている場合、 true が返ること' do
+    it '投入金額が足りており、かつ在庫がある場合、 true が返ること' do
       @vending_machine.insert(500)
       _(@vending_machine.buy?(:cola)).must_equal(true)
     end
 
     it '投入金額が足りていない場合、 false が返ること' do
       @vending_machine.insert(100)
+      _(@vending_machine.buy?(:cola)).must_equal(false)
+    end
+
+    it '在庫がない場合、 false が返ること' do
+      @vending_machine.insert(1000)
+      5.times { @vending_machine.buy(:cola) }
       _(@vending_machine.buy?(:cola)).must_equal(false)
     end
   end
@@ -104,6 +110,12 @@ describe VendingMachine do
       _(@vending_machine.buy(:cola)).must_be_nil
     end
 
+    it '在庫がない場合、 nil が返ること' do
+      @vending_machine.insert(1000)
+      5.times { @vending_machine.buy(:cola) }
+      _(@vending_machine.buy(:cola)).must_be_nil
+    end
+
     it 'ドリンクを購入した場合、その price と同じ値の分 sales_amount が増えること' do
       @vending_machine.insert(500)
       @vending_machine.buy(:cola)
@@ -114,6 +126,18 @@ describe VendingMachine do
       @vending_machine.insert(500)
       @vending_machine.buy(:cola)
       _(@vending_machine.stock_tally['コーラ'][:count]).must_equal(4)
+    end
+
+    it 'ドリンクを購入できなかった場合、sales_amount が増えないこと' do
+      @vending_machine.insert(100)
+      @vending_machine.buy(:cola)
+      _(@vending_machine.sales_amount).must_equal(0)
+    end
+
+    it 'ドリンクを購入できなかった場合、在庫が減らないこと' do
+      @vending_machine.insert(100)
+      @vending_machine.buy(:cola)
+      _(@vending_machine.stock_tally['コーラ'][:count]).must_equal(5)
     end
   end
 

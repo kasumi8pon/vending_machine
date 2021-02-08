@@ -35,7 +35,7 @@ class VendingMachine
 
   def buy?(drink)
     drink_klass = Object.const_get(drink.to_s.capitalize)
-    drink_klass.price <= @input_amount
+    drink_klass.price <= @input_amount && !@stock[drink_klass].empty?
   end
 
   def buy(drink)
