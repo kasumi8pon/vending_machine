@@ -62,6 +62,19 @@ describe VendingMachine do
       @vending_machine.refund
       _(@vending_machine.input_amount).must_equal 0
     end
+
+    it 'refund すると、釣り銭が減ること' do
+      @vending_machine.insert(1000)
+      @vending_machine.insert(500)
+      @vending_machine.insert(50)
+      @vending_machine.insert(50)
+      @vending_machine.refund
+      _(@vending_machine.change[1000]).must_equal 4
+      _(@vending_machine.change[500]).must_equal 9
+      _(@vending_machine.change[100]).must_equal 9
+      _(@vending_machine.change[50]).must_equal 10
+      _(@vending_machine.change[10]).must_equal 10
+    end
   end
 
   describe '#stock_tally' do
@@ -136,6 +149,16 @@ describe VendingMachine do
       @vending_machine.insert(500)
       @vending_machine.buy(:cola)
       _(@vending_machine.input_amount).must_equal(0)
+    end
+
+    it 'ドリンクを購入した場合、返した釣り銭の分 change が減ること' do
+      @vending_machine.insert(500)
+      @vending_machine.buy(:cola)
+      _(@vending_machine.change[1000]).must_equal(5)
+      _(@vending_machine.change[10]).must_equal(7)
+      _(@vending_machine.change[50]).must_equal(9)
+      _(@vending_machine.change[100]).must_equal(7)
+      _(@vending_machine.change[500]).must_equal(10)
     end
 
     it 'ドリンクを購入した場合、在庫の量が減ること' do
