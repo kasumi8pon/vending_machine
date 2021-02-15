@@ -20,10 +20,16 @@ class VendingMachine
 
   def refund
     refund_money = @input_amount
+    rest_input_amount = @input_amount
     [1000, 500, 100, 50, 10].each do |money|
-      count, @input_amount = @input_amount.divmod(money)
+      count = rest_input_amount / money
+      if @change[money] < count
+        count = @change[money]
+      end
       @change[money] -= count
+      rest_input_amount -= count * money
     end
+    @input_amount = 0
     refund_money
   end
 

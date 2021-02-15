@@ -75,6 +75,16 @@ describe VendingMachine do
       _(@vending_machine.change[50]).must_equal 10
       _(@vending_machine.change[10]).must_equal 10
     end
+
+    it 'ある種類の釣り銭が足りないとき、それより小額の釣り銭があればその釣り銭が減ること' do
+      11.times { @vending_machine.insert(1000) }
+      @vending_machine.refund
+      _(@vending_machine.change[1000]).must_equal 0
+      _(@vending_machine.change[500]).must_equal 0
+      _(@vending_machine.change[100]).must_equal 0
+      _(@vending_machine.change[50]).must_equal 10
+      _(@vending_machine.change[10]).must_equal 10
+    end
   end
 
   describe '#stock_tally' do
