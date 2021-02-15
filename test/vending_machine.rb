@@ -85,6 +85,16 @@ describe VendingMachine do
       _(@vending_machine.change[50]).must_equal 10
       _(@vending_machine.change[10]).must_equal 10
     end
+
+    it '釣り銭が足りないとき、払い戻しをしないこと' do
+      12.times { @vending_machine.insert(1000) }
+      _ { @vending_machine.refund }.must_raise VendingMachine::NoChangeError
+      _(@vending_machine.change[1000]).must_equal 5
+      _(@vending_machine.change[500]).must_equal 10
+      _(@vending_machine.change[100]).must_equal 10
+      _(@vending_machine.change[50]).must_equal 10
+      _(@vending_machine.change[10]).must_equal 10
+    end
   end
 
   describe '#stock_tally' do

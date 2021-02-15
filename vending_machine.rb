@@ -1,4 +1,6 @@
 class VendingMachine
+  class NoChangeError < StandardError; end
+
   INSERTABLE_MONEY = [10, 50, 100, 500, 1000]
 
   attr_reader :input_amount, :sales_amount, :change
@@ -20,14 +22,23 @@ class VendingMachine
 
   def refund
     refund_money = @input_amount
+
     rest_input_amount = @input_amount
+    refund_change = Hash.new(0)
+
     [1000, 500, 100, 50, 10].each do |money|
       count = rest_input_amount / money
       if @change[money] < count
         count = @change[money]
       end
-      @change[money] -= count
+      refund_change[money] = count
       rest_input_amount -= count * money
+    end
+
+    raise NoChangeError unless rest_input_amount.zero?
+
+    refund_change.each do |money, count|
+      @change[money] -= count
     end
     @input_amount = 0
     refund_money
