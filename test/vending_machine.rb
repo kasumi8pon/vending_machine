@@ -93,8 +93,12 @@ describe VendingMachine do
     end
 
     it '在庫がない場合、 false が返ること' do
-      @vending_machine.insert(1000)
-      5.times { @vending_machine.buy(:cola) }
+      5.times do
+        @vending_machine.insert(100)
+        @vending_machine.insert(20)
+        @vending_machine.insert(20)
+        @vending_machine.buy(:cola)
+      end
       _(@vending_machine.buy?(:cola)).must_equal(false)
     end
   end
@@ -113,8 +117,12 @@ describe VendingMachine do
     end
 
     it '在庫がない場合、 nil が返ること' do
-      @vending_machine.insert(1000)
-      5.times { @vending_machine.buy(:cola) }
+      5.times do
+        @vending_machine.insert(100)
+        @vending_machine.insert(20)
+        @vending_machine.insert(20)
+        @vending_machine.buy(:cola)
+      end
       _(@vending_machine.buy(:cola)).must_be_nil
     end
 
