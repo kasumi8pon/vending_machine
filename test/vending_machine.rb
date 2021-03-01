@@ -1,5 +1,6 @@
 require 'minitest/autorun'
 require './vending_machine'
+require 'stringio'
 
 describe VendingMachine do
   before do
@@ -33,6 +34,10 @@ describe VendingMachine do
 
     it '想定外のものを insert すると、insert したものが返ること' do
       _(@vending_machine.insert('葉っぱのおかね')).must_equal '葉っぱのおかね'
+    end
+
+    it 'お金を insert すると、購入可能なドリンクのリストが返ること' do
+      _ { @vending_machine.insert(100) }.must_output "購入可能なドリンク: 水\n"
     end
   end
 
