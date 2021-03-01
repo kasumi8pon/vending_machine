@@ -9,7 +9,7 @@ class VendingMachine
     @input_amount = 0
     @sales_amount = 0
     @change_stock = { 10 => 10, 50 => 10, 100 => 10, 500 => 10, 1000 => 5 }
-    @stock = Hash.new { |hash, key| hash[key] = [] }
+    @drink_stock = Hash.new { |hash, key| hash[key] = [] }
     5.times { self.store(Cola.new) }
   end
 
@@ -45,18 +45,18 @@ class VendingMachine
   end
 
   def store(drink)
-    @stock[drink.class] << drink
+    @drink_stock[drink.class] << drink
   end
 
   def stock_tally
-    @stock.each_with_object({}) do |(drink, drinks), result|
+    @drink_stock.each_with_object({}) do |(drink, drinks), result|
       result[drink.name] = { price: drink.price, count: drinks.size }
     end
   end
 
   def buy?(drink)
     drink_klass = Object.const_get(drink.to_s.capitalize)
-    drink_klass.price <= @input_amount && !@stock[drink_klass].empty?
+    drink_klass.price <= @input_amount && !@drink_stock[drink_klass].empty?
   end
 
   def buy(drink)
@@ -66,7 +66,7 @@ class VendingMachine
     @sales_amount += drink_klass.price
     @input_amount -= drink_klass.price
     change = refund
-    [@stock[drink_klass].shift, change]
+    [@drink_stock[drink_klass].shift, change]
   end
 end
 
