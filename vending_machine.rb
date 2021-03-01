@@ -20,6 +20,7 @@ class VendingMachine
     return money unless INSERTABLE_MONEY.include?(money)
 
     @input_amount += money
+    @change_stock[money] += 1
     puts "購入可能なドリンク: #{buyable_drinks.join('、')}"
     0
   end

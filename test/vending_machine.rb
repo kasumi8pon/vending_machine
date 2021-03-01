@@ -39,6 +39,12 @@ describe VendingMachine do
     it 'お金を insert すると、購入可能なドリンクのリストが返ること' do
       _ { @vending_machine.insert(100) }.must_output "購入可能なドリンク: 水\n"
     end
+
+    it 'insert したお金が、釣り銭ストックになること' do
+      _(@vending_machine.change_stock[10]).must_equal 10
+      @vending_machine.insert(10)
+      _(@vending_machine.change_stock[10]).must_equal 11
+    end
   end
 
   describe '#input_amount' do
@@ -70,35 +76,29 @@ describe VendingMachine do
 
     it 'refund すると、釣り銭が減ること' do
       @vending_machine.insert(1000)
-      @vending_machine.insert(500)
-      @vending_machine.insert(50)
-      @vending_machine.insert(50)
+      _(@vending_machine.change_stock[1000]).must_equal 6
       @vending_machine.refund
-      _(@vending_machine.change_stock[1000]).must_equal 4
-      _(@vending_machine.change_stock[500]).must_equal 9
-      _(@vending_machine.change_stock[100]).must_equal 9
-      _(@vending_machine.change_stock[50]).must_equal 10
-      _(@vending_machine.change_stock[10]).must_equal 10
-    end
-
-    it 'ある種類の釣り銭が足りないとき、それより小額の釣り銭があればその釣り銭が減ること' do
-      11.times { @vending_machine.insert(1000) }
-      @vending_machine.refund
-      _(@vending_machine.change_stock[1000]).must_equal 0
-      _(@vending_machine.change_stock[500]).must_equal 0
-      _(@vending_machine.change_stock[100]).must_equal 0
-      _(@vending_machine.change_stock[50]).must_equal 10
-      _(@vending_machine.change_stock[10]).must_equal 10
-    end
-
-    it '釣り銭が足りないとき、払い戻しをしないこと' do
-      12.times { @vending_machine.insert(1000) }
-      _ { @vending_machine.refund }.must_raise VendingMachine::NoChangeError
       _(@vending_machine.change_stock[1000]).must_equal 5
-      _(@vending_machine.change_stock[500]).must_equal 10
-      _(@vending_machine.change_stock[100]).must_equal 10
-      _(@vending_machine.change_stock[50]).must_equal 10
-      _(@vending_machine.change_stock[10]).must_equal 10
+    end
+  end
+
+  describe '#change' do
+    it '現在の投入額を釣り銭とした場合の組み合わせが返ること' do
+      3.times { @vending_machine.insert(100) }
+      8.times { @vending_machine.insert(10) }
+      _(@vending_machine.change).must_equal({ 1000 => 0, 500 => 0, 100 => 3, 50 => 1, 10 => 3 })
+    end
+
+    it 'ある種類の釣り銭が足りないとき、それより小額の釣り銭があればその釣り銭を利用した組み合わせが返ること' do
+      3.times { @vending_machine.insert(100) }
+      8.times { @vending_machine.insert(10) }
+      _(@vending_machine.change).must_equal({ 1000 => 0, 500 => 0, 100 => 3, 50 => 1, 10 => 3 })
+    end
+
+    it '釣り銭が足りないとき、エラーが起きること' do
+      @vending_machine.instance_variable_set('@change_stock', { 10 => 0, 50 => 0, 100 => 0, 500 => 0, 1000 => 0 })
+      @vending_machine.instance_variable_set('@input_amount', 380)
+      _ { @vending_machine.refund }.must_raise VendingMachine::NoChangeError
     end
   end
 
@@ -195,7 +195,7 @@ describe VendingMachine do
       _(@vending_machine.change_stock[10]).must_equal(7)
       _(@vending_machine.change_stock[50]).must_equal(9)
       _(@vending_machine.change_stock[100]).must_equal(7)
-      _(@vending_machine.change_stock[500]).must_equal(10)
+      _(@vending_machine.change_stock[500]).must_equal(11)
     end
 
     it 'ドリンクを購入した場合、在庫の量が減ること' do
