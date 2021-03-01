@@ -2,6 +2,7 @@ class VendingMachine
   class NoChangeError < StandardError; end
 
   INSERTABLE_MONEY = [10, 50, 100, 500, 1000]
+  STOCK_MONEY = [10, 50, 100, 500, 1000]
 
   attr_reader :input_amount, :sales_amount, :change_stock
 
@@ -26,7 +27,7 @@ class VendingMachine
     rest_input_amount = @input_amount
     refund_change = Hash.new(0)
 
-    [1000, 500, 100, 50, 10].each do |money|
+    STOCK_MONEY.sort.reverse.each do |money|
       count = rest_input_amount / money
       if @change_stock[money] < count
         count = @change_stock[money]
