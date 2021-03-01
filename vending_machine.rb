@@ -22,25 +22,11 @@ class VendingMachine
   end
 
   def refund
-    refund_money = @input_amount
-
-    rest_input_amount = @input_amount
-    refund_change = Hash.new(0)
-
-    STOCK_MONEY.sort.reverse.each do |money|
-      count = rest_input_amount / money
-      if @change_stock[money] < count
-        count = @change_stock[money]
-      end
-      refund_change[money] = count
-      rest_input_amount -= count * money
-    end
-
-    raise NoChangeError unless rest_input_amount.zero?
-
-    refund_change.each do |money, count|
+    change.each do |money, count|
       @change_stock[money] -= count
     end
+
+    refund_money = @input_amount
     @input_amount = 0
     refund_money
   end
@@ -68,6 +54,24 @@ class VendingMachine
     @input_amount -= drink_klass.price
     change = refund
     [@drink_stock[drink_klass].shift, change]
+  end
+
+  def change
+    rest_input_amount = @input_amount
+    refund_change = Hash.new(0)
+
+    STOCK_MONEY.sort.reverse.each do |money|
+      count = rest_input_amount / money
+      if @change_stock[money] < count
+        count = @change_stock[money]
+      end
+      refund_change[money] = count
+      rest_input_amount -= count * money
+    end
+
+    raise NoChangeError unless rest_input_amount.zero?
+
+    refund_change
   end
 end
 
