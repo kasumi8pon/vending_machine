@@ -69,31 +69,31 @@ describe VendingMachine do
       @vending_machine.insert(50)
       @vending_machine.insert(50)
       @vending_machine.refund
-      _(@vending_machine.change[1000]).must_equal 4
-      _(@vending_machine.change[500]).must_equal 9
-      _(@vending_machine.change[100]).must_equal 9
-      _(@vending_machine.change[50]).must_equal 10
-      _(@vending_machine.change[10]).must_equal 10
+      _(@vending_machine.change_stock[1000]).must_equal 4
+      _(@vending_machine.change_stock[500]).must_equal 9
+      _(@vending_machine.change_stock[100]).must_equal 9
+      _(@vending_machine.change_stock[50]).must_equal 10
+      _(@vending_machine.change_stock[10]).must_equal 10
     end
 
     it 'ある種類の釣り銭が足りないとき、それより小額の釣り銭があればその釣り銭が減ること' do
       11.times { @vending_machine.insert(1000) }
       @vending_machine.refund
-      _(@vending_machine.change[1000]).must_equal 0
-      _(@vending_machine.change[500]).must_equal 0
-      _(@vending_machine.change[100]).must_equal 0
-      _(@vending_machine.change[50]).must_equal 10
-      _(@vending_machine.change[10]).must_equal 10
+      _(@vending_machine.change_stock[1000]).must_equal 0
+      _(@vending_machine.change_stock[500]).must_equal 0
+      _(@vending_machine.change_stock[100]).must_equal 0
+      _(@vending_machine.change_stock[50]).must_equal 10
+      _(@vending_machine.change_stock[10]).must_equal 10
     end
 
     it '釣り銭が足りないとき、払い戻しをしないこと' do
       12.times { @vending_machine.insert(1000) }
       _ { @vending_machine.refund }.must_raise VendingMachine::NoChangeError
-      _(@vending_machine.change[1000]).must_equal 5
-      _(@vending_machine.change[500]).must_equal 10
-      _(@vending_machine.change[100]).must_equal 10
-      _(@vending_machine.change[50]).must_equal 10
-      _(@vending_machine.change[10]).must_equal 10
+      _(@vending_machine.change_stock[1000]).must_equal 5
+      _(@vending_machine.change_stock[500]).must_equal 10
+      _(@vending_machine.change_stock[100]).must_equal 10
+      _(@vending_machine.change_stock[50]).must_equal 10
+      _(@vending_machine.change_stock[10]).must_equal 10
     end
   end
 
@@ -174,11 +174,11 @@ describe VendingMachine do
     it 'ドリンクを購入した場合、返した釣り銭の分 change が減ること' do
       @vending_machine.insert(500)
       @vending_machine.buy(:cola)
-      _(@vending_machine.change[1000]).must_equal(5)
-      _(@vending_machine.change[10]).must_equal(7)
-      _(@vending_machine.change[50]).must_equal(9)
-      _(@vending_machine.change[100]).must_equal(7)
-      _(@vending_machine.change[500]).must_equal(10)
+      _(@vending_machine.change_stock[1000]).must_equal(5)
+      _(@vending_machine.change_stock[10]).must_equal(7)
+      _(@vending_machine.change_stock[50]).must_equal(9)
+      _(@vending_machine.change_stock[100]).must_equal(7)
+      _(@vending_machine.change_stock[500]).must_equal(10)
     end
 
     it 'ドリンクを購入した場合、在庫の量が減ること' do
@@ -221,13 +221,13 @@ describe VendingMachine do
     end
   end
 
-  describe '#change' do
+  describe '#change_stock' do
     it '初期状態で、1000円札が 5枚、10円玉、50円玉、100円玉、500円玉 が 10 枚ずつ用意してあること' do
-      _(@vending_machine.change[1000]).must_equal(5)
-      _(@vending_machine.change[10]).must_equal(10)
-      _(@vending_machine.change[50]).must_equal(10)
-      _(@vending_machine.change[100]).must_equal(10)
-      _(@vending_machine.change[500]).must_equal(10)
+      _(@vending_machine.change_stock[1000]).must_equal(5)
+      _(@vending_machine.change_stock[10]).must_equal(10)
+      _(@vending_machine.change_stock[50]).must_equal(10)
+      _(@vending_machine.change_stock[100]).must_equal(10)
+      _(@vending_machine.change_stock[500]).must_equal(10)
     end
   end
 end

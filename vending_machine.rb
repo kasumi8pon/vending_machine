@@ -3,12 +3,12 @@ class VendingMachine
 
   INSERTABLE_MONEY = [10, 50, 100, 500, 1000]
 
-  attr_reader :input_amount, :sales_amount, :change
+  attr_reader :input_amount, :sales_amount, :change_stock
 
   def initialize
     @input_amount = 0
     @sales_amount = 0
-    @change = { 10 => 10, 50 => 10, 100 => 10, 500 => 10, 1000 => 5 }
+    @change_stock = { 10 => 10, 50 => 10, 100 => 10, 500 => 10, 1000 => 5 }
     @stock = Hash.new { |hash, key| hash[key] = [] }
     5.times { self.store(Cola.new) }
   end
@@ -28,8 +28,8 @@ class VendingMachine
 
     [1000, 500, 100, 50, 10].each do |money|
       count = rest_input_amount / money
-      if @change[money] < count
-        count = @change[money]
+      if @change_stock[money] < count
+        count = @change_stock[money]
       end
       refund_change[money] = count
       rest_input_amount -= count * money
@@ -38,7 +38,7 @@ class VendingMachine
     raise NoChangeError unless rest_input_amount.zero?
 
     refund_change.each do |money, count|
-      @change[money] -= count
+      @change_stock[money] -= count
     end
     @input_amount = 0
     refund_money
