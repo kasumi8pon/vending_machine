@@ -242,4 +242,12 @@ describe VendingMachine do
       _(@vending_machine.change_stock[500]).must_equal(10)
     end
   end
+
+  describe '#buyable_drinks' do
+    it '購入可能なドリンクのリストが返ること' do
+      @vending_machine.insert(100)
+      @vending_machine.insert(50)
+      _(@vending_machine.buyable_drinks).must_equal(%w(コーラ 水))
+    end
+  end
 end

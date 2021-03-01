@@ -58,6 +58,10 @@ class VendingMachine
     [@drink_stock[drink_klass].shift, change]
   end
 
+  def buyable_drinks
+    @drink_stock.keys.select { |drink| buy?(drink.to_s.downcase.to_sym) }.map(&:name)
+  end
+
   def change
     rest_input_amount = @input_amount
     refund_change = Hash.new(0)
