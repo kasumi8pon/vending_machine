@@ -12,6 +12,8 @@ class VendingMachine
     @change_stock = { 10 => 10, 50 => 10, 100 => 10, 500 => 10, 1000 => 5 }
     @drink_stock = Hash.new { |hash, key| hash[key] = [] }
     5.times { self.store(Cola.new) }
+    5.times { self.store(Redbull.new) }
+    5.times { self.store(Water.new) }
   end
 
   def insert(money)
@@ -82,5 +84,25 @@ class Cola
 
   def self.price
     120
+  end
+end
+
+class Redbull
+  def self.name
+    'レッドブル'
+  end
+
+  def self.price
+    200
+  end
+end
+
+class Water
+  def self.name
+    '水'
+  end
+
+  def self.price
+    100
   end
 end

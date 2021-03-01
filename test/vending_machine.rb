@@ -98,8 +98,14 @@ describe VendingMachine do
   end
 
   describe '#stock_tally' do
-    it '初期状態として 120 円のコーラが 5 本入っており、その情報が返ること' do
-      _(@vending_machine.stock_tally).must_equal({ 'コーラ' => { price: 120, count: 5 } })
+    it '初期状態として 120 円のコーラ、200 円のレッドブル、100 円の水が 5 本入っており、その情報が返ること' do
+      _(@vending_machine.stock_tally).must_equal(
+        {
+          'コーラ' => { price: 120, count: 5 },
+          'レッドブル' => { price: 200, count: 5 },
+          '水' => { price: 100, count: 5 }
+        }
+      )
     end
   end
 
@@ -110,7 +116,13 @@ describe VendingMachine do
 
     it '投入したドリンクの情報が在庫情報に反映されること' do
       @vending_machine.store(Cola.new)
-      _(@vending_machine.stock_tally).must_equal({ 'コーラ' => { price: 120, count: 6 } })
+      _(@vending_machine.stock_tally).must_equal(
+        {
+          'コーラ' => { price: 120, count: 6 },
+          'レッドブル' => { price: 200, count: 5 },
+          '水' => { price: 100, count: 5 }
+        }
+      )
     end
   end
 
