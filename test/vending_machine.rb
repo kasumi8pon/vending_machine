@@ -61,19 +61,6 @@ describe VendingMachine do
   end
 
   describe '#refund' do
-    it 'insert した合計金額が返ること' do
-      @vending_machine.insert(100)
-      @vending_machine.insert(1000)
-      _(@vending_machine.refund).must_equal 1100
-    end
-
-    it 'input_amount が 0 になること' do
-      @vending_machine.insert(100)
-      @vending_machine.insert(1000)
-      @vending_machine.refund
-      _(@vending_machine.input_amount).must_equal 0
-    end
-
     it 'refund すると、釣り銭が減ること' do
       @vending_machine.insert(1000)
       _(@vending_machine.change_stock[1000]).must_equal 6
@@ -83,22 +70,16 @@ describe VendingMachine do
   end
 
   describe '#change' do
-    it '現在の投入額を釣り銭とした場合の組み合わせが返ること' do
-      3.times { @vending_machine.insert(100) }
-      8.times { @vending_machine.insert(10) }
-      _(@vending_machine.change).must_equal({ 1000 => 0, 500 => 0, 100 => 3, 50 => 1, 10 => 3 })
+    it '引数の金額を釣り銭とした場合の組み合わせが返ること' do
+      _(@vending_machine.change(380)).must_equal({ 1000 => 0, 500 => 0, 100 => 3, 50 => 1, 10 => 3 })
     end
 
     it 'ある種類の釣り銭が足りないとき、それより小額の釣り銭があればその釣り銭を利用した組み合わせが返ること' do
-      3.times { @vending_machine.insert(100) }
-      8.times { @vending_machine.insert(10) }
-      _(@vending_machine.change).must_equal({ 1000 => 0, 500 => 0, 100 => 3, 50 => 1, 10 => 3 })
+      _(@vending_machine.change(380)).must_equal({ 1000 => 0, 500 => 0, 100 => 3, 50 => 1, 10 => 3 })
     end
 
     it '釣り銭が足りないとき、エラーが起きること' do
-      @vending_machine.instance_variable_set('@change_stock', { 10 => 0, 50 => 0, 100 => 0, 500 => 0, 1000 => 0 })
-      @vending_machine.instance_variable_set('@input_amount', 380)
-      _ { @vending_machine.refund }.must_raise VendingMachine::NoChangeError
+      _ { @vending_machine.change(20000) }.must_raise VendingMachine::NoChangeError
     end
   end
 
@@ -219,6 +200,16 @@ describe VendingMachine do
     it 'ドリンクを購入できなかった場合、在庫が減らないこと' do
       @vending_machine.insert(100)
       @vending_machine.buy(:cola)
+      _(@vending_machine.stock_tally['コーラ'][:count]).must_equal(5)
+    end
+
+    it '釣り銭ストックが足りない場合、何もしないこと' do
+      @vending_machine.instance_variable_set('@change_stock', { 10 => 0, 50 => 0, 100 => 0, 500 => 0, 1000 => 0 })
+      @vending_machine.insert(500)
+      @vending_machine.buy(:cola)
+      _(@vending_machine.input_amount).must_equal(500)
+      _(@vending_machine.sales_amount).must_equal(0)
+      _(@vending_machine.change_stock).must_equal({ 10 => 0, 50 => 0, 100 => 0, 500 => 1, 1000 => 0 })
       _(@vending_machine.stock_tally['コーラ'][:count]).must_equal(5)
     end
   end

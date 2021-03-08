@@ -26,7 +26,7 @@ class VendingMachine
   end
 
   def refund
-    change.each do |money, count|
+    change(@input_amount).each do |money, count|
       @change_stock[money] -= count
     end
 
@@ -53,31 +53,35 @@ class VendingMachine
   def buy(drink)
     return unless buy?(drink)
 
-    drink_klass = Object.const_get(drink.to_s.capitalize)
-    @sales_amount += drink_klass.price
-    @input_amount -= drink_klass.price
-    change = refund
-    [@drink_stock[drink_klass].shift, change]
+    begin
+      drink_klass = Object.const_get(drink.to_s.capitalize)
+      @input_amount -= drink_klass.price
+      change = refund
+      @sales_amount += drink_klass.price
+      [@drink_stock[drink_klass].shift, change]
+    rescue NoChangeError
+      @input_amount += drink_klass.price
+      nil
+    end
   end
 
   def buyable_drinks
     @drink_stock.keys.select { |drink| buy?(drink.to_s.downcase.to_sym) }.map(&:name)
   end
 
-  def change
-    rest_input_amount = @input_amount
+  def change(amount)
     refund_change = Hash.new(0)
 
     STOCK_MONEY.sort.reverse.each do |money|
-      count = rest_input_amount / money
+      count = amount / money
       if @change_stock[money] < count
         count = @change_stock[money]
       end
       refund_change[money] = count
-      rest_input_amount -= count * money
+      amount -= count * money
     end
 
-    raise NoChangeError unless rest_input_amount.zero?
+    raise NoChangeError unless amount.zero?
 
     refund_change
   end
