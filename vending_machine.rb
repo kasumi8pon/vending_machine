@@ -14,6 +14,7 @@ class VendingMachine
     5.times { self.store('コーラ', Cola.new) }
     5.times { self.store('レッドブル', Redbull.new) }
     5.times { self.store('水', Water.new) }
+    5.times { self.store('ランダム', [Cola.new, DietCola.new, Tea.new].sample) }
   end
 
   def insert(money)
@@ -92,6 +93,26 @@ end
 class Cola
   def self.name
     'コーラ'
+  end
+
+  def self.price
+    120
+  end
+end
+
+class DietCola
+  def self.name
+    'ダイエットコーラ'
+  end
+
+  def self.price
+    120
+  end
+end
+
+class Tea
+  def self.name
+    'お茶'
   end
 
   def self.price

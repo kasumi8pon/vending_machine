@@ -84,12 +84,13 @@ describe VendingMachine do
   end
 
   describe '#stock_tally' do
-    it '初期状態として 120 円のコーラ、200 円のレッドブル、100 円の水が 5 本入っており、その情報が返ること' do
+    it '初期状態として 120 円のコーラ、200 円のレッドブル、100 円の水が 5 本、120 円のランダムドリンクが 5 本入っており、その情報が返ること' do
       _(@vending_machine.stock_tally).must_equal(
         {
           'コーラ' => { price: 120, count: 5 },
           'レッドブル' => { price: 200, count: 5 },
-          '水' => { price: 100, count: 5 }
+          '水' => { price: 100, count: 5 },
+          'ランダム' => { price: 120, count: 5 }
         }
       )
     end
@@ -106,7 +107,8 @@ describe VendingMachine do
         {
           'コーラ' => { price: 120, count: 6 },
           'レッドブル' => { price: 200, count: 5 },
-          '水' => { price: 100, count: 5 }
+          '水' => { price: 100, count: 5 },
+          'ランダム' => { price: 120, count: 5 }
         }
       )
     end
@@ -243,7 +245,7 @@ describe VendingMachine do
     it '購入可能なドリンクのリストが返ること' do
       @vending_machine.insert(100)
       @vending_machine.insert(50)
-      _(@vending_machine.buyable_drinks).must_equal(%w(コーラ 水))
+      _(@vending_machine.buyable_drinks).must_equal(%w(コーラ 水 ランダム))
     end
   end
 end
