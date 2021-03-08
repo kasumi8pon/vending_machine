@@ -11,9 +11,9 @@ class VendingMachine
     @sales_amount = 0
     @change_stock = { 10 => 10, 50 => 10, 100 => 10, 500 => 10, 1000 => 5 }
     @drink_stock = Hash.new { |hash, key| hash[key] = [] }
-    5.times { self.store(Cola.new) }
-    5.times { self.store(Redbull.new) }
-    5.times { self.store(Water.new) }
+    5.times { self.store('コーラ', Cola.new) }
+    5.times { self.store('レッドブル', Redbull.new) }
+    5.times { self.store('水', Water.new) }
   end
 
   def insert(money)
@@ -35,38 +35,40 @@ class VendingMachine
     refund_money
   end
 
-  def store(drink)
-    @drink_stock[drink.class] << drink
+  def store(name, drink)
+    @drink_stock[name] << drink
   end
 
   def stock_tally
-    @drink_stock.each_with_object({}) do |(drink, drinks), result|
-      result[drink.name] = { price: drink.price, count: drinks.size }
+    @drink_stock.each_with_object({}) do |(drink_name, drinks), result|
+      next if drinks.size.zero?
+
+      result[drink_name] = { price: drinks.first.class.price, count: drinks.size }
     end
   end
 
-  def buy?(drink)
-    drink_klass = Object.const_get(drink.to_s.capitalize)
-    drink_klass.price <= @input_amount && !@drink_stock[drink_klass].empty?
+  def buy?(drink_name)
+    !@drink_stock[drink_name].empty? && (@drink_stock[drink_name].first.class.price <= @input_amount)
   end
 
-  def buy(drink)
-    return unless buy?(drink)
+  def buy(drink_name)
+    return unless buy?(drink_name)
+
+    price = @drink_stock[drink_name].first.class.price
 
     begin
-      drink_klass = Object.const_get(drink.to_s.capitalize)
-      @input_amount -= drink_klass.price
+      @input_amount -= price
       change = refund
-      @sales_amount += drink_klass.price
-      [@drink_stock[drink_klass].shift, change]
+      @sales_amount += price
+      [@drink_stock[drink_name].shift, change]
     rescue NoChangeError
-      @input_amount += drink_klass.price
+      @input_amount += price
       nil
     end
   end
 
   def buyable_drinks
-    @drink_stock.keys.select { |drink| buy?(drink.to_s.downcase.to_sym) }.map(&:name)
+    @drink_stock.keys.select { |drink_name| buy?(drink_name) }
   end
 
   def change(amount)
