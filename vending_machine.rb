@@ -13,10 +13,10 @@ class VendingMachine
     @sales_amount = 0
     @change_stock = { 10 => 10, 50 => 10, 100 => 10, 500 => 10, 1000 => 5 }
     @drink_stock = Hash.new { |hash, key| hash[key] = [] }
-    5.times { self.store('コーラ', Cola.new) }
-    5.times { self.store('レッドブル', Redbull.new) }
-    5.times { self.store('水', Water.new) }
-    5.times { self.store('ランダム', [Cola.new, DietCola.new, Tea.new].sample) }
+    5.times { self.store('コーラ', Cola.new('2021/12/31')) }
+    5.times { self.store('レッドブル', Redbull.new('2021/12/31')) }
+    5.times { self.store('水', Water.new('2021/12/31')) }
+    5.times { self.store('ランダム', [Cola.new('2021/12/31'), DietCola.new('2021/12/31'), Tea.new('2021/12/31')].sample) }
   end
 
   def insert(money)

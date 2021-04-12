@@ -1,5 +1,17 @@
+require 'date'
 
-class Cola
+class Drink
+  attr_reader :expired_on
+
+  def initialize(expired_on)
+    @expired_on = Date.parse(expired_on)
+  end
+
+  def expired?(today = Date.today)
+    today > expired_on
+  end
+end
+class Cola < Drink
   def self.name
     'コーラ'
   end
@@ -9,7 +21,7 @@ class Cola
   end
 end
 
-class DietCola
+class DietCola < Drink
   def self.name
     'ダイエットコーラ'
   end
@@ -19,7 +31,7 @@ class DietCola
   end
 end
 
-class Tea
+class Tea < Drink
   def self.name
     'お茶'
   end
@@ -29,7 +41,7 @@ class Tea
   end
 end
 
-class Redbull
+class Redbull < Drink
   def self.name
     'レッドブル'
   end
@@ -39,7 +51,7 @@ class Redbull
   end
 end
 
-class Water
+class Water < Drink
   def self.name
     '水'
   end

@@ -98,11 +98,11 @@ describe VendingMachine do
 
   describe '#test_store' do
     it 'ドリンクを投入できること' do
-      _(@vending_machine.store('コーラ', Cola.new).size).must_equal(6)
+      _(@vending_machine.store('コーラ', Cola.new('2021/12/31')).size).must_equal(6)
     end
 
     it '投入したドリンクの情報が在庫情報に反映されること' do
-      @vending_machine.store('コーラ', Cola.new)
+      @vending_machine.store('コーラ', Cola.new('2021/12/31'))
       _(@vending_machine.stock_tally).must_equal(
         {
           'コーラ' => { price: 120, count: 6 },
