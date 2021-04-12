@@ -3,6 +3,7 @@ class VendingMachine
 
   INSERTABLE_MONEY = [10, 50, 100, 500, 1000]
   STOCK_MONEY = [10, 50, 100, 500, 1000]
+  PRIZE_PROBABILITY = 5
 
   attr_reader :input_amount, :sales_amount, :change_stock
 
@@ -61,11 +62,24 @@ class VendingMachine
       @input_amount -= price
       change = refund
       @sales_amount += price
-      [@drink_stock[drink_name].shift, change]
+
+      output = [@drink_stock[drink_name].shift]
+
+      if get_prize?(drink_name)
+        output << @drink_stock[drink_name].shift
+      end
+
+      output << change
     rescue NoChangeError
       @input_amount += price
       nil
     end
+  end
+
+  def get_prize?(drink_name)
+    return false if @drink_stock[drink_name].empty?
+
+    (1..100).to_a.sample <= PRIZE_PROBABILITY
   end
 
   def buyable_drinks

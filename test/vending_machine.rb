@@ -214,6 +214,25 @@ describe VendingMachine do
       _(@vending_machine.change_stock).must_equal({ 10 => 0, 50 => 0, 100 => 0, 500 => 1, 1000 => 0 })
       _(@vending_machine.stock_tally['コーラ'][:count]).must_equal(5)
     end
+
+    it 'あたりイベントが発生したとき、同じジュースが 2 本出力される' do
+      @vending_machine.stub(:get_prize?, true) do
+        @vending_machine.insert(500)
+        result = @vending_machine.buy('コーラ')
+        _(result.size).must_equal(3)
+        _(result[0]).must_be_instance_of(Cola)
+        _(result[1]).must_be_instance_of(Cola)
+        _(result[2]).must_equal(380)
+      end
+    end
+  end
+
+  describe '#get_prize?' do
+    it 'そのドリンクの在庫がない場合、あたりが発生しないこと' do
+      @vending_machine.instance_variable_set('@drink_stock', { 'コーラ' => [] })
+      probability = Array.new(10000) { @vending_machine.get_prize?('コーラ') }.count { |v| v }.to_f / 10000 * 100
+      _(probability).must_equal(0)
+    end
   end
 
   describe '#sales_amount' do
