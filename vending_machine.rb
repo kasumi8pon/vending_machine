@@ -51,7 +51,9 @@ class VendingMachine
   end
 
   def buy?(drink_name)
-    !@drink_stock[drink_name].empty? && (@drink_stock[drink_name].first.class.price <= @input_amount)
+    !@drink_stock[drink_name].empty? &&
+      !@drink_stock[drink_name].first.expired? &&
+      (@drink_stock[drink_name].first.class.price <= @input_amount)
   end
 
   def buy(drink_name)

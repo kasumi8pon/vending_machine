@@ -134,6 +134,13 @@ describe VendingMachine do
       end
       _(@vending_machine.buy?('コーラ')).must_equal(false)
     end
+
+    it '賞味期限が切れている場合、 false が返ること' do
+      @vending_machine.instance_variable_set('@drink_stock', Hash.new { |hash, key| hash[key] = [] })
+      @vending_machine.store('コーラ', Cola.new('2000/1/1'))
+      @vending_machine.insert(500)
+      _(@vending_machine.buy?('コーラ')).must_equal(false)
+    end
   end
 
   describe '#buy' do
